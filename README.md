@@ -13,3 +13,6 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install Plugin dotenv
 `npm install dotenv`
+
+### Install Plugin morgan used to logging API Request
+`npm install morgan`
