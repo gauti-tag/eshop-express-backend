@@ -16,3 +16,7 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install Plugin morgan used to logging API Request
 `npm install morgan`
+
+
+### Install Plugin mongoose used to use and connect Mongo DataBase
+`npm install morgan`
