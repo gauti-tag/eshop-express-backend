@@ -14,7 +14,16 @@ router.get('/', async (req, res) => {
     res.json(categoryList);
 });
 
-// Post Categories
+// Get Category
+router.get('/:id', async (req, res) => {
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+        res.status(400).json({ status: 400, description: 'The category with the given ID was not found' });
+    }
+    res.status(200).json(category);
+})
+
+// Post Category
 router.post('/', async (req, res) => {
     const category = new Category({
         name: req.body.name,
@@ -29,6 +38,21 @@ router.post('/', async (req, res) => {
     res.status(200).json(createCategory);
 
 });
+
+// Update Category
+router.put('/:id', async (req, res) => {
+    const category = await Category.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        icon: req.body.icon,
+        color: req.body.color
+    });
+
+    if (!category) {
+        return res.status(400).json({ status: 400, description: 'The Category was not updated' });
+    }
+
+    res.status(200).json({ category });
+})
 
 // Delete Categories - url: /api/v1/:id
 router.delete('/:id', (req, res) => {
