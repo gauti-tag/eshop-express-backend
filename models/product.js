@@ -11,8 +11,8 @@ const productSchema = mongoose.Schema({
 });
 
 // Define and export the model for product and start with capital letter
-Product = mongoose.model('Product', productSchema);
+exports.Product = mongoose.model('Product', productSchema);
 
 //exports.Product
-// Export in nodeJs
-module.exports = Product;
+// Another way to Export in nodeJs
+//module.exports = Product;
