@@ -7,14 +7,16 @@ require('dotenv/config');
 // Get value of API_URL environment variable
 const api = process.env.API_URL;
 
-// Products routers
-const productsRouter = require('./routers/products');
+// Logic routers
+const productsRouter = require('./routers/products'); //Products
+const userRouter = require('./routers/users'); // Users
+const categoryRouter = require('./routers/categories'); // Categories
+const orderRouter = require('./routers/orders'); // Orders
 
 const morgan = require('morgan'); // Library for writing log
 const mongoose = require('mongoose'); // library for MangoDB ( Oriented Collections )
 
 // Middleware to understand response JSON
-
 // Use to render proper json
 app.use(express.json());
 
@@ -23,19 +25,9 @@ app.use(morgan('tiny'));
 
 // Routers
 app.use(`${api}/products`, productsRouter);
-
-// Define the schema for the product
-/*const productSchema = mongoose.Schema({
-    name: String,
-    image: String,
-    countInStock: {
-        type: Number,
-        required: true
-    }
-});*/
-
-// Define model for product and start with capital letter
-//const Product = mongoose.model('Product', productSchema);
+app.use(`${api}/users`, userRouter);
+app.use(`${api}/categories`, categoryRouter);
+app.use(`${api}/orders`, orderRouter);
 
 // Connect to MongoDB DataBase
 mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
