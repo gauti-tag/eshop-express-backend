@@ -20,3 +20,6 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install Plugin mongoose used to use and connect Mongo DataBase
 `npm install mongoose`
+
+### Install CORS
+`npm install cors@^2.8.5`

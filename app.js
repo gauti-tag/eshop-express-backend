@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 // Require to use variable in env file
 require('dotenv/config');
@@ -22,6 +23,10 @@ app.use(express.json());
 
 // Use to write log in the App
 app.use(morgan('tiny'));
+
+// Enabling Cors
+app.use(cors());
+app.options('*', cors());
 
 // Routers
 app.use(`${api}/products`, productsRouter);
