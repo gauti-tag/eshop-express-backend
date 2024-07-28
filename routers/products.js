@@ -139,7 +139,21 @@ router.get('/get/count', async (req, res) => {
             message: 'No Product in the database'
         })
     }
-    res.status(200).json({ status: 200, message: 'Product details', data: { count: productCount } });
+    res.status(200).json({ status: 200, message: 'All product', data: { count: productCount } });
+});
+
+// API Get products that "isFeatured" is true in database (async) / (await)
+router.get('/get/featured/:count', async (req, res) => {
+    const count = req.params.count ? req.params.count : 0
+    const features = await Product.find({ isFeatured: true }).limit(+count); // "+count" used to convert string to numeric
+
+    if (!features) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Feature in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'Featured Products', data: features });
 });
 
 
