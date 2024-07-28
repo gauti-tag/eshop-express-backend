@@ -16,6 +16,7 @@ const orderRouter = require('./routers/orders'); // Orders
 
 const morgan = require('morgan'); // Library for writing log
 const mongoose = require('mongoose'); // library for MangoDB ( Oriented Collections )
+const authJwt = require('./helpers/jwt'); // function to protect API routes
 
 // Middleware to understand response JSON
 // Use to render proper json
@@ -27,6 +28,10 @@ app.use(morgan('tiny'));
 // Enabling Cors
 app.use(cors());
 app.options('*', cors());
+
+// Enabling protected API routes
+app.use(authJwt());
+
 
 // Routers
 app.use(`${api}/products`, productsRouter);
