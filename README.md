@@ -26,3 +26,6 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install bcryptjs [ hashing password ]
 `npm install bcryptjs`
+
+### Install jsonwebtoken [ jwt generator ]
+npm install jsonwebtoken
