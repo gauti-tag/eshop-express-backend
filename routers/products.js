@@ -128,5 +128,20 @@ router.delete('/:id', (req, res) => {
 });
 
 
+// API Get how many product in database (async) / (await)
+router.get('/get/count', async (req, res) => {
+
+    const productCount = await Product.countDocuments(); // Count all documents according to the product's collection
+
+    if (!productCount) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Product in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'Product details', data: { count: productCount } });
+});
+
+
 
 module.exports = router;
