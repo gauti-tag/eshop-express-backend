@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-//const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // Users Get
 router.get(`/`, async (req, res) => {
@@ -80,5 +80,36 @@ router.post(`/login`, async (req, res) => {
         res.status(400).json({ status: 400, message: 'Password is wrong', data: null });
     }
 });
+
+// API Get how many users in database (async) / (await)
+router.get('/get/count', async (req, res) => {
+
+    const userCount = await User.countDocuments(); // Count all documents according to the user's collection
+
+    if (!userCount) {
+        res.status(400).json({
+            status: 400,
+            message: 'No User in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'All users', data: { count: userCount } });
+});
+
+
+// Delete a User - url: /api/v1/:id
+router.delete('/:id', (req, res) => {
+    // Can use findByIdAndDelete or findByIdAndRemove
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid User ID.' });
+    User.findByIdAndDelete(req.params.id).then(user => {
+        if (user) {
+            return res.status(200).json({ status: 200, description: 'the user is deleted' });
+        } else {
+            return res.status(404).json({ status: 404, description: 'User not found' });
+        }
+    }).catch(e => {
+        return res.status(400).json({ status: 400, description: e });
+    })
+});
+
 
 module.exports = router;
