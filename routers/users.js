@@ -66,7 +66,8 @@ router.post(`/login`, async (req, res) => {
     if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
         secret = process.env.SECRET
         const token = jwt.sign({
-            userId: user.id
+            userId: user.id,
+            isAdmin: user.isAdmin,
         },
             secret,
             {
