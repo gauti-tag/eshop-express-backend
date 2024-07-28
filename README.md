@@ -25,7 +25,10 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 `npm install cors@^2.8.5`
 
 ### Install bcryptjs [ hashing password ]
-`npm install bcryptjs`
+`npm install bcryptjs@^2.4.3`
 
 ### Install jsonwebtoken [ jwt generator ]
-npm install jsonwebtoken
+`npm install jsonwebtoken@^8.5.1`
+
+### Install express-jwt [ used to protect the APIs ]
+`npm install express-jwt@^6.0.0`
