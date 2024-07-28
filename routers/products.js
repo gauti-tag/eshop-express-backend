@@ -3,6 +3,7 @@ const { Category } = require('../models/category');
 const express = require('express');
 const router = express.Router();
 
+const mongoose = require('mongoose');
 // API Get all products (async) / (await)
 router.get('/', async (req, res) => {
 
@@ -28,7 +29,7 @@ router.get('/', async (req, res) => {
 
 // API Get a product (async) / (await)
 router.get('/:id', async (req, res) => {
-
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid Product ID.' });
     //const product = await Product.findById(req.params.id);
     const product = await Product.findById(req.params.id).populate('category'); // using "populate" render the details of the category
 
@@ -80,6 +81,8 @@ router.post('/', async (req, res) => {
 // API to update a product (async) / (await)
 router.put('/:id', async (req, res) => {
 
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid Product ID.' });
+
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).json({ status: 400, message: 'Invalid category.' });
 
@@ -112,6 +115,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', (req, res) => {
     //console.log(req.params);
     // Can use findByIdAndDelete or findByIdAndRemove
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid Product ID.' });
     Product.findByIdAndDelete(req.params.id).then(product => {
         if (product) {
             return res.status(200).json({ status: 200, description: 'the product is deleted' });
