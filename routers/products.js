@@ -108,5 +108,21 @@ router.put('/:id', async (req, res) => {
     res.status(200).json({ status: 200, message: 'Product updated', data: product });
 });
 
+// Delete a Product - url: /api/v1/:id
+router.delete('/:id', (req, res) => {
+    //console.log(req.params);
+    // Can use findByIdAndDelete or findByIdAndRemove
+    Product.findByIdAndDelete(req.params.id).then(product => {
+        if (product) {
+            return res.status(200).json({ status: 200, description: 'the product is deleted' });
+        } else {
+            return res.status(404).json({ status: 404, description: 'Product not found' });
+        }
+    }).catch(e => {
+        return res.status(400).json({ status: 400, description: e });
+    })
+});
+
+
 
 module.exports = router;
