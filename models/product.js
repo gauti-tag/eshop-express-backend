@@ -1,4 +1,3 @@
-const { type } = require('express/lib/response');
 const mongoose = require('mongoose');
 
 // Define the schema for the product
@@ -60,7 +59,7 @@ const productSchema = mongoose.Schema({
 
 });
 
-
+// code for adding attribute 'id' in the response database
 productSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
