@@ -1,7 +1,12 @@
 const { User } = require('../models/user');
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
+// Require to use variable in env file
+//require('dotenv/config');
+
+//let app_secret = process.env.APP_SECRET;
 // User Get
 router.get(`/`, async (req, res) => {
     const userList = await User.find();
@@ -19,7 +24,7 @@ router.post(`/`, (req, res) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        passwordHash: req.body.passwordHash,
+        passwordHash: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,
