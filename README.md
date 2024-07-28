@@ -23,3 +23,6 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install CORS
 `npm install cors@^2.8.5`
+
+### Install bcryptjs [ hashing password ]
+`npm install bcryptjs`
