@@ -1,15 +1,17 @@
 const { User } = require('../models/user');
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+//const bcrypt = require('bcryptjs');
+
+const mongoose = require('mongoose');
 
 // Require to use variable in env file
 //require('dotenv/config');
 
 //let app_secret = process.env.APP_SECRET;
-// User Get
+// Users Get
 router.get(`/`, async (req, res) => {
-    const userList = await User.find();
+    const userList = await User.find().select('-passwordHash');
     if (!userList) {
         res.status(400).json({
             status: 400,
@@ -44,5 +46,19 @@ router.post(`/`, (req, res) => {
     })
 }
 );
+
+// Get an user
+router.get(`/:id`, async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid User ID.' });
+    const user = await User.findById(req.params.id).select('-passwordHash'); // Excluding passwordHash
+    if (!user) {
+        res.status(400).json({
+            status: 400,
+            message: 'No User found in the database'
+        });
+    }
+    res.status(200).json({ status: 200, message: 'User found', data: user });
+});
+
 
 module.exports = router;
