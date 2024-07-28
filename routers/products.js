@@ -77,4 +77,36 @@ router.post('/', async (req, res) => {
     })*/
 });
 
+// API to update a product (async) / (await)
+router.put('/:id', async (req, res) => {
+
+    const category = await Category.findById(req.body.category);
+    if (!category) return res.status(400).json({ status: 400, message: 'Invalid category.' });
+
+    const product = await Product.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        description: req.body.description,
+        richDescription: req.body.richDescription,
+        image: req.body.image,
+        brand: req.body.brand,
+        price: req.body.price,
+        category: req.body.category,
+        countInStock: req.body.countInStock,
+        rating: req.body.rating,
+        numReviews: req.body.numReviews,
+        isFeatured: req.body.isFeatured,
+    },
+        { new: true }
+    );
+
+    if (!product) {
+        res.status(500).json({
+            status: 500,
+            message: 'Fail to update the Product in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'Product updated', data: product });
+});
+
+
 module.exports = router;
