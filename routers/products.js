@@ -7,18 +7,29 @@ const mongoose = require('mongoose');
 // API Get all products (async) / (await)
 router.get('/', async (req, res) => {
 
-    const productList = await Product.find();
+    //const productList = await Product.find();
     //const productList = await Product.find().populate('category'); // populate with category details
     //const productList = await Product.find().select('name image'); // Select which columns to render
     //const productList = await Product.find().select('name image -_id'); // Select which columns to render minus the column "id"
     //console.log(` Product list ${productList}`)
 
+
+
+    // sample url : api/v1/products?categories=14488932312,148154854,2158941664
+    let filter = {};
+    if (req.query.categories) {
+        filter = { category: req.query.categories.split(',') } // Filter product by categories
+    }
+
+    const productList = await Product.find(filter).populate('category');
+    //console.log(productList);
     if (!productList) {
         res.status(400).json({
-            description: 'No Product in the database'
+            status: 400,
+            message: 'No Product in the database'
         })
     }
-    res.send(productList);
+    res.status(200).json({ status: 200, message: 'List of product', data: productList });
     /*const product = {
         id: 1,
         name: 'hair dresser',
