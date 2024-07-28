@@ -7,6 +7,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {
 
     const productList = await Product.find();
+    //const productList = await Product.find().select('name image'); // Select which columns to render
+    //const productList = await Product.find().select('name image -_id'); // Select which columns to render minus the column "id"
     //console.log(` Product list ${productList}`)
 
     if (!productList) {
@@ -21,6 +23,20 @@ router.get('/', async (req, res) => {
         image: 'some_url'
     }
     res.send(product);*/
+});
+
+// API Get a product (async) / (await)
+router.get('/:id', async (req, res) => {
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Product in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'Product details', data: product });
 });
 
 // API Post product
