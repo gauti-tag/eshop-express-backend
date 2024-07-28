@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
 
     const productList = await Product.find();
+    //const productList = await Product.find().populate('category'); // populate with category details
     //const productList = await Product.find().select('name image'); // Select which columns to render
     //const productList = await Product.find().select('name image -_id'); // Select which columns to render minus the column "id"
     //console.log(` Product list ${productList}`)
@@ -28,7 +29,8 @@ router.get('/', async (req, res) => {
 // API Get a product (async) / (await)
 router.get('/:id', async (req, res) => {
 
-    const product = await Product.findById(req.params.id);
+    //const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('category'); // using "populate" render the details of the category
 
     if (!product) {
         res.status(400).json({
