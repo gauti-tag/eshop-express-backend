@@ -1,14 +1,11 @@
 const { User } = require('../models/user');
 const express = require('express');
 const router = express.Router();
-//const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 
-// Require to use variable in env file
-//require('dotenv/config');
-
-//let app_secret = process.env.APP_SECRET;
 // Users Get
 router.get(`/`, async (req, res) => {
     const userList = await User.find().select('-passwordHash');
@@ -60,5 +57,27 @@ router.get(`/:id`, async (req, res) => {
     res.status(200).json({ status: 200, message: 'User found', data: user });
 });
 
+// Login route an logic
+
+router.post(`/login`, async (req, res) => {
+    const user = await User.findOne({ email: req.body.email })
+    if (!user) return res.status(400).json({ status: 400, message: 'The user not found.' });
+
+    if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+        secret = process.env.SECRET
+        const token = jwt.sign({
+            userId: user.id
+        },
+            secret,
+            {
+                expiresIn: '1d',
+            }
+        );
+        res.status(200).json({ status: 200, message: 'User Authenticated', data: { token: token } });
+
+    } else {
+        res.status(400).json({ status: 400, message: 'Password is wrong', data: null });
+    }
+});
 
 module.exports = router;
