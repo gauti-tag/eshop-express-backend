@@ -60,6 +60,16 @@ const productSchema = mongoose.Schema({
 
 });
 
+
+productSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+productSchema.set('toJSON', {
+    virtuals: true,
+});
+
+
 // Define and export the model for product and start with capital letter
 exports.Product = mongoose.model('Product', productSchema);
 
