@@ -32,3 +32,6 @@ Add `"start": "nodemon app.js"` to `"scripts"` in the package.json
 
 ### Install express-jwt [ used to protect the APIs ]
 `npm install express-jwt@^6.0.0`
+
+### install multer [ used to upload images et validation etc... ]
+npm install multer
