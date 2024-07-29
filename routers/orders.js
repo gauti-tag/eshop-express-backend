@@ -1,5 +1,3 @@
-
-const { populate } = require('dotenv');
 const { Order } = require('../models/order');
 const { OrderItem } = require('../models/order-item');
 
@@ -77,6 +75,37 @@ router.post('/', async (req, res) => {
         })
     })
 })
+
+// Update Order
+router.put(`/:id`, async (req, res) => {
+    const order = await Order.findByIdAndUpdate(req.params.id, {
+        status: req.body.status,
+    },
+        { new: true }
+    );
+
+    if (!order) {
+        return res.status(400).json({ status: 400, description: 'The Order was not updated' });
+    }
+
+    res.status(200).json({ status: 200, message: 'Order updated', data: order });
+})
+
+// Delete order - url: /api/v1/:id
+router.delete(`/:id`, (req, res) => {
+    //console.log(req.params);
+    // Can use findByIdAndDelete or findByIdAndRemove
+    Order.findByIdAndDelete(req.params.id).then(order => {
+        if (order) {
+            return res.status(200).json({ status: 200, message: 'the order has been deleted' });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Order not found' });
+        }
+    }).catch(e => {
+        return res.status(400).json({ status: 400, message: e });
+    })
+});
+
 
 // Export Orders router
 module.exports = router;

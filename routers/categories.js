@@ -62,12 +62,12 @@ router.delete('/:id', (req, res) => {
     // Can use findByIdAndDelete or findByIdAndRemove
     Category.findByIdAndDelete(req.params.id).then(category => {
         if (category) {
-            return res.status(200).json({ status: 200, description: 'the category is deleted' });
+            return res.status(200).json({ status: 200, message: 'the category is deleted' });
         } else {
-            return res.status(404).json({ status: 404, description: 'Category not found' });
+            return res.status(404).json({ status: 404, message: 'Category not found' });
         }
     }).catch(e => {
-        return res.status(400).json({ status: 400, description: e });
+        return res.status(400).json({ status: 400, message: e });
     })
 });
 
