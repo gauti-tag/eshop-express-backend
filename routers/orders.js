@@ -155,5 +155,21 @@ router.get('/get/count', async (req, res) => {
 });
 
 
+// Get Orders related to a user
+router.get('/get/userorders/:userId', async (req, res) => {
+    const userOrdersList = await Order.find({ user: req.params.userId })
+        .populate({ path: 'orderItems', populate: { path: 'product', populate: 'category' } }).sort({ 'dataOrdered': -1 });
+
+    if (!userOrdersList) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Order in the database'
+        })
+    }
+
+    res.status(200).json({ status: 200, message: 'List of Orders', data: userOrdersList });
+});
+
+
 // Export Orders router
 module.exports = router;
