@@ -120,6 +120,40 @@ router.delete(`/:id`, (req, res) => {
     })
 });
 
+// Get Total Sales in the Order
+router.get(`/get/totalsales`, async (req, res) => {
+
+    // Magic method to get the sum of price sales
+    const totalSales = await Order.aggregate([
+        {
+            $group:
+            {
+                _id: null, // the presence of "_id" is important because Mongoose always return "_id" in responses
+                totalPrices: { $sum: '$totalPrice' }
+            }
+        }
+    ]);
+
+    if (!totalSales) return res.status(400).json({ status: 400, message: 'the order sales can not be generated' });
+    res.status(200).json({ status: 200, message: 'Total price', data: { totalSales: totalSales.pop().totalPrices } }); // 'pop()' is used retrieve the first value in an array
+})
+
+
+
+// API Get how many orders in database (async) / (await)
+router.get('/get/count', async (req, res) => {
+
+    const orderCount = await Order.countDocuments(); // Count all documents according to the product's collection
+
+    if (!orderCount) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Product in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'All Orders', data: { count: orderCount } });
+});
+
 
 // Export Orders router
 module.exports = router;
