@@ -1,3 +1,5 @@
+
+const { populate } = require('dotenv');
 const { Order } = require('../models/order');
 const { OrderItem } = require('../models/order-item');
 
@@ -5,8 +7,9 @@ const express = require('express');
 const router = express.Router();
 
 // Get Orders
+// 'sort() used to order - sort({'dateOrdered': -1}) ordered by date from newest to oldest'
 router.get('/', async (req, res) => {
-    const ordersList = await Order.find();
+    const ordersList = await Order.find().populate('user', 'name').sort({ 'dateOrdered': -1 }); // "populate(entity, *fields)" is used to give details of user in order lists
 
     if (!ordersList) {
         res.status(400).json({
@@ -16,7 +19,23 @@ router.get('/', async (req, res) => {
     }
 
     res.status(200).json({ status: 200, message: 'List of Orders', data: ordersList });
+});
+
+// Get Order
+router.get(`/:id`, async (req, res) => {
+    const order = await Order.findById(req.params.id)
+        .populate('user', 'name')
+        .populate({ path: 'orderItems', populate: { path: 'product', populate: 'category' } }) // populate orderItems -> product -> category
+
+    if (!order) {
+        res.status(400).json({
+            status: 400,
+            message: 'No Order in the database'
+        })
+    }
+    res.status(200).json({ status: 200, message: 'Order found', data: order });
 })
+
 
 // Post Order
 router.post('/', async (req, res) => {
