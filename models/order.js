@@ -48,11 +48,11 @@ const orderSchema = mongoose.Schema({
 })
 
 // code for adding attribute 'id' in the response database
-productSchema.virtual('id').get(function () {
+orderSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
-productSchema.set('toJSON', {
+orderSchema.set('toJSON', {
     virtuals: true,
 });
 

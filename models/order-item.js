@@ -13,11 +13,11 @@ const orderItemSchema = mongoose.Schema({
 })
 
 // code for adding attribute 'id' in the response database
-productSchema.virtual('id').get(function () {
+orderItemSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
-productSchema.set('toJSON', {
+orderItemSchema.set('toJSON', {
     virtuals: true,
 });
 
