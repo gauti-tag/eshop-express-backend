@@ -96,7 +96,7 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
 
     // Get file and custom full url or checkable url
     const fileName = req.file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
     const product = new Product({
         name: req.body.name,
@@ -148,7 +148,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
     // Assign image path
     if (file) {
         const fileName = req.file.filename;
-        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
         imagePath = `${basePath}${fileName}`;
     } else {
         imagePath = product.image;
@@ -237,7 +237,7 @@ router.put(
 
         if (files) {
             files.map(file => {
-                const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+                const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
                 imagesPaths.push(`${basePath}${file.filename}`);
             })
         }
