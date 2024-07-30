@@ -36,6 +36,9 @@ app.use(authJwt());
 // handling kind of errors
 app.use(errorHandler);
 
+// Set Static folder path for our images. NB: Add '/' in front of the path
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
 
 // Routers
 app.use(`${api}/products`, productsRouter);
