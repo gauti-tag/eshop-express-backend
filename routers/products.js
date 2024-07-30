@@ -90,6 +90,10 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).json({ status: 400, message: 'Invalid category.' });
 
+    // check the presence of image
+    const file = req.file;
+    if (!file) return res.status(400).json({ status: 400, message: 'no image in the request' })
+
     // Get file and custom full url or checkable url
     const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
