@@ -129,18 +129,36 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
 });
 
 // API to update a product (async) / (await)
-router.put('/:id', async (req, res) => {
+router.put('/:id', uploadOptions.single('image'), async (req, res) => {
 
+    // Check the valid Mongo ID
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid Product ID.' });
 
+    // Check the presence of category
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).json({ status: 400, message: 'Invalid category.' });
 
-    const product = await Product.findByIdAndUpdate(req.params.id, {
+    // Check the presence of product
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(400).json({ status: 400, message: 'Invalid product.' });
+
+    const file = req.file;
+    let imagePath = null;
+
+    // Assign image path
+    if (file) {
+        const fileName = req.file.filename;
+        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+        imagePath = `${basePath}${fileName}`;
+    } else {
+        imagePath = product.image;
+    }
+
+    updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
         name: req.body.name,
         description: req.body.description,
         richDescription: req.body.richDescription,
-        image: req.body.image,
+        image: imagePath,
         brand: req.body.brand,
         price: req.body.price,
         category: req.body.category,
@@ -149,16 +167,16 @@ router.put('/:id', async (req, res) => {
         numReviews: req.body.numReviews,
         isFeatured: req.body.isFeatured,
     },
-        { new: true }
+        { new: true } //Configure this to get the upgraded record
     );
 
-    if (!product) {
+    if (!updatedProduct) {
         res.status(500).json({
             status: 500,
             message: 'Fail to update the Product in the database'
         })
     }
-    res.status(200).json({ status: 200, message: 'Product updated', data: product });
+    res.status(200).json({ status: 200, message: 'Product updated', data: updatedProduct });
 });
 
 // Delete a Product - url: /api/v1/:id
