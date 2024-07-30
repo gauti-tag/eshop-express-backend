@@ -5,18 +5,31 @@ const router = express.Router();
 
 const mongoose = require('mongoose');
 
+// Plugin to deal with images
 const multer = require('multer');
 
+const FILE_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpeg',
+    'image/jpg': 'jpg'
+}
 
 // Configuration for uploading file
 var storage = multer.diskStorage({
-    description: function (req, file, cb) {
-        cb(null, 'public/uploads');
+    destination: function (req, file, cb) {
+        // Validate file type
+        const isValid = FILE_TYPE_MAP[file.mimetype];
+        let uploadError = new Error('invalid image type');
+        if (isValid) {
+            uploadError = null;
+        }
+        cb(uploadError, 'public/uploads');
     },
     filename: function (req, file, cb) {
-        const fileName = file.originalname.replace(' ', '-')
+        const fileName = file.originalname.replace(/ /g, '-')
         //const fileName = file.originalname.split(' ').join('-')
-        cb(null, fileName + '-' + Date.now());
+        const extension = FILE_TYPE_MAP[file.mimetype]; // Check the extension sending from frontend
+        cb(null, `${fileName}-${Date.now()}.${extension}`);
     }
 })
 
@@ -77,6 +90,7 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).json({ status: 400, message: 'Invalid category.' });
 
+    // Get file and custom full url or checkable url
     const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
 
