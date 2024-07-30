@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
         filter = { category: req.query.categories.split(',') } // Filter product by categories
     }
 
-    const productList = await Product.find(filter).populate('category');
+    const productList = await Product.find(filter).populate('category').sort({ 'dateCreated': -1 });
     //console.log(productList);
     if (!productList) {
         res.status(400).json({
@@ -154,7 +154,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         imagePath = product.image;
     }
 
-    updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
         name: req.body.name,
         description: req.body.description,
         richDescription: req.body.richDescription,
@@ -223,6 +223,41 @@ router.get('/get/featured/:count', async (req, res) => {
     }
     res.status(200).json({ status: 200, message: 'Featured Products', data: features });
 });
+
+// Upload multiple images, max: 10 files
+router.put(
+    `/gallery-images/:id`,
+    uploadOptions.array('images', 10),
+    async (req, res) => {
+        // Check the valid Mongo ID
+        if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ status: 400, message: 'Invalid Product ID.' });
+
+        const files = req.files;
+        let imagesPaths = [];
+
+        if (files) {
+            files.map(file => {
+                const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+                imagesPaths.push(`${basePath}${file.filename}`);
+            })
+        }
+
+        // Save the files
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
+            images: imagesPaths,
+        },
+            { new: true } //Configure this to get the upgraded record
+        );
+
+        if (!updatedProduct) {
+            res.status(500).json({
+                status: 500,
+                message: 'Fail to update the Product in the database'
+            })
+        }
+        res.status(200).json({ status: 200, message: 'Product updated', data: updatedProduct });
+    }
+);
 
 
 
